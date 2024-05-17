@@ -1,14 +1,22 @@
 spring:
-  flyway:
-    baselineOnMigrate: true
-    enabled: true
   jpa:
     open-in-view: false
     show-sql: true
   banner:
     location: banner.txt
   datasource:
-    url: ${HOST_DB}
-    username: ${DB_USER}
-    password: ${DB_PASS}
+    url: ${HOST_DB:jdbc:postgresql://localhost:5432/bank}
+    username: ${DB_USER:admin}
+    password: ${DB_PASS:admin}
     driver-class-name: org.postgresql.Driver
+  flyway:
+    baselineOnMigrate: true
+    enabled: true
+
+application:
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET_KEY:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+      expiration: ${EXP_SECRET_KEY:86400000} # a day
+      refresh-token:
+        expiration: ${EXP_REFRESH_TOKEN:604800000} # 7 days
