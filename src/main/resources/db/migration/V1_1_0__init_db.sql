@@ -3,8 +3,8 @@ create table if not exists public."user"
     id            bigint generated always as identity primary key,
     phone         varchar(12)  default 'UNKNOWN',
     email         varchar(100) default 'UNKNOWN',
-    date_of_birth date,
-    fullname      varchar(100),
+    date_of_birth date not null,
+    fullname      varchar(100) not null,
     login         varchar(100) not null unique,
     password      varchar(100) not null
 );
