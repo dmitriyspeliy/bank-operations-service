@@ -18,9 +18,11 @@ import java.math.BigDecimal;
 @SuperBuilder
 @NoArgsConstructor
 public class UserAccount extends AbstractEntity {
-    @Column(name = "balance")
-    BigDecimal balance;
-    @OneToOne(cascade = CascadeType.ALL)
+    @Column(name = "init_balance")
+    BigDecimal initBalance;
+    @Column(name = "current_balance")
+    BigDecimal currentBalance;
+    @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     User user;
 }

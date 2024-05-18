@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name = "user")
+@Table(name = "\"user\"")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @SuperBuilder
 @NoArgsConstructor
@@ -23,7 +23,7 @@ public class User extends AbstractEntity {
     String phone;
     @Column(name = "email")
     String email;
-    @Column(name = "date_of_birth")
+    @Column( name = "date_of_birth")
     LocalDate dateOfBirth;
     @Column(name = "fullname")
     String fullname;
@@ -31,8 +31,8 @@ public class User extends AbstractEntity {
     String login;
     @Column(name = "password")
     String password;
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     UserAccount userAccount;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     List<Token> tokenList;
 }

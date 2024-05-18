@@ -1,9 +1,9 @@
 create table if not exists public."user"
 (
     id            bigint generated always as identity primary key,
-    phone         varchar(12)  default 'UNKNOWN',
-    email         varchar(100) default 'UNKNOWN',
-    date_of_birth date not null,
+    phone         varchar(12)  not null default 'UNKNOWN',
+    email         varchar(100) not null default 'UNKNOWN',
+    date_of_birth timestamp    not null,
     fullname      varchar(100) not null,
     login         varchar(100) not null unique,
     password      varchar(100) not null
@@ -24,13 +24,15 @@ comment on column "user".password is 'Пароль';
 
 create table if not exists user_account
 (
-    id      bigint generated always as identity primary key,
-    balance decimal not null check ( balance >= 0 ),
-    user_id bigint  not null unique
+    id              bigint generated always as identity primary key,
+    init_balance    decimal not null check ( init_balance >= 0 ),
+    current_balance decimal not null check ( current_balance >= 0 ),
+    user_id         bigint  not null unique
 );
 
 comment on table user_account is 'Аккаунт пользователя';
-comment on column user_account.balance is 'Баланс счета';
+comment on column user_account.init_balance is 'Баланс счета на момент создания';
+comment on column user_account.current_balance is 'Актуальный баланс счета';
 comment on column user_account.user_id is 'Идентификатор юзера, к которому прикреплен счет';
 
 
