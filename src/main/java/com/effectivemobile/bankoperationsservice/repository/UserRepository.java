@@ -32,7 +32,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> findByDateOfBirthAfter(LocalDate dateOfBirth, Pageable pageable);
 
-    Page<User> findByFullnameLike(String fullname, Pageable pageable);
+    @Query("Select User from User c where c.fullname like :fullname||'%'")
+    Page<User> findByFullnameLike(@Param(value = "fullname") String fullname, Pageable pageable);
 
 
 }

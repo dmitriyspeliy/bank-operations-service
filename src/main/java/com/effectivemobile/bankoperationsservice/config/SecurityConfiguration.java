@@ -27,7 +27,8 @@ public class SecurityConfiguration {
     private final LogoutHandler logoutHandler;
 
     private final String[] whiteList = new String[]{
-            "/api/v1/auth/**",
+            "/api/v1/auth/register",
+            "/api/v1/auth/authenticate",
             "/v3/api-docs/**",
             "/swagger-ui.html",
             "/swagger-ui/**"};

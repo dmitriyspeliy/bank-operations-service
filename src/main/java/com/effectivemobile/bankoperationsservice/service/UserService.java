@@ -79,7 +79,7 @@ public class UserService {
 
     //если правильно понял задание, то удалять можно только что то одно, либо почту либо телефон.
     //Если почта не в значении UNKNOWN, то удаляем телефон
-    public void deleteUserPhone(String phone, Long id) throws BadRequestException {
+    public void deleteUserPhone(Long id) throws BadRequestException {
         Optional<User> userOptional = userRepository.findById(id);
         if (!Objects.equals(userOptional.get().getEmail(), "UNKNOWN")) {
             userRepository.updateUserPhone("UNKNOWN", id);
@@ -108,20 +108,20 @@ public class UserService {
         return userPage.stream().map(UserMapper::toDto).collect(Collectors.toList());
     }
 
-    public User findByPhone(String phone) throws ElemNotFound {
+    public UserDto findByPhone(String phone) throws ElemNotFound {
         Optional<User> userOptional = userRepository.findByPhone(phone);
         if (userOptional.isPresent()) {
-            return userOptional.get();
+            return UserMapper.toDto(userOptional.get());
         } else {
             logDebug("Couldn't find user with phone " + phone);
             throw new ElemNotFound("Couldn't find user with phone " + phone);
         }
     }
 
-    public User findByEmail(String email) throws ElemNotFound {
+    public UserDto findByEmail(String email) throws ElemNotFound {
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
-            return userOptional.get();
+            return UserMapper.toDto(userOptional.get());
         } else {
             logDebug("Couldn't find user with email " + email);
             throw new ElemNotFound("Couldn't find user with email " + email);

@@ -3,13 +3,13 @@ package com.effectivemobile.bankoperationsservice.service;
 import com.effectivemobile.bankoperationsservice.dto.AuthResponse;
 import com.effectivemobile.bankoperationsservice.dto.AuthenticationRequest;
 import com.effectivemobile.bankoperationsservice.dto.UserInfo;
-import com.effectivemobile.bankoperationsservice.mapper.UserMapper;
 import com.effectivemobile.bankoperationsservice.model.Token;
 import com.effectivemobile.bankoperationsservice.model.User;
 import com.effectivemobile.bankoperationsservice.repository.TokenRepository;
 import com.effectivemobile.bankoperationsservice.repository.UserRepository;
 import com.effectivemobile.bankoperationsservice.utils.enums.TokenType;
 import com.effectivemobile.bankoperationsservice.utils.exception.BadRequestException;
+import com.effectivemobile.bankoperationsservice.utils.exception.ElemNotFound;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -42,7 +42,7 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthResponse authenticate(AuthenticationRequest request) {
+    public AuthResponse authenticate(AuthenticationRequest request) throws ElemNotFound {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getLogin(),
@@ -50,13 +50,15 @@ public class AuthenticationService {
                 )
         );
         var user = userRepository.findByLogin(request.getLogin());
-        String jwtToken = null;
-        String refreshToken = null;
+        String jwtToken;
+        String refreshToken;
         if (user.isPresent()) {
             jwtToken = jwtService.generateToken(user.get());
             refreshToken = jwtService.generateRefreshToken(user.get());
             revokeAllUserTokens(user.get());
             saveUserToken(user.get(), jwtToken);
+        } else {
+            throw new ElemNotFound("Couldn't find user by login " + request.getLogin());
         }
         return AuthResponse.builder()
                 .accessToken(jwtToken)
@@ -78,7 +80,7 @@ public class AuthenticationService {
     public void refreshToken(
             HttpServletRequest request,
             HttpServletResponse response
-    ) throws IOException {
+    ) throws IOException, ElemNotFound {
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         String refreshToken;
         String login;
@@ -95,6 +97,8 @@ public class AuthenticationService {
                     .refreshToken(refreshToken)
                     .build();
             new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
+        }else if(user.isEmpty()) {
+            throw new ElemNotFound("Couldn't find user by login " + login);
         }
     }
 

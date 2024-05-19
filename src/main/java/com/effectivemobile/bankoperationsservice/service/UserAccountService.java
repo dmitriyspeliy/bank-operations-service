@@ -1,5 +1,6 @@
 package com.effectivemobile.bankoperationsservice.service;
 
+import com.effectivemobile.bankoperationsservice.dto.TransferResponse;
 import com.effectivemobile.bankoperationsservice.model.UserAccount;
 import com.effectivemobile.bankoperationsservice.repository.UserAccountRepository;
 import com.effectivemobile.bankoperationsservice.utils.exception.BadRequestException;
@@ -37,7 +38,7 @@ public class UserAccountService {
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public void transferMoney(Long sender, Long receiver, BigDecimal transferValue) throws BadRequestException {
+    public TransferResponse transferMoney(Long sender, Long receiver, BigDecimal transferValue) throws BadRequestException {
         Optional<UserAccount> senderAccountOptional = userAccountRepository.findByUser(sender);
         Optional<UserAccount> receiverAccountOptional = userAccountRepository.findByUser(receiver);
         if (senderAccountOptional.isPresent() && receiverAccountOptional.isPresent()) {
@@ -52,6 +53,7 @@ public class UserAccountService {
                 receiverAccount.setCurrentBalance(currentBalanceReceiver.add(transferValue));
                 userAccountRepository.save(senderAccount);
                 userAccountRepository.save(receiverAccount);
+                return TransferResponse.builder().status("OK").build();
             }
         } else {
             throw new BadRequestException("Sender or receiver doesn't exists");
