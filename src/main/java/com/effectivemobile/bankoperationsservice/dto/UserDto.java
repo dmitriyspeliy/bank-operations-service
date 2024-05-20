@@ -42,11 +42,6 @@ public class UserDto {
     @JsonProperty(value = "login")
     String login;
 
-    @Schema(description = "Пароль",
-            example = "1239010")
-    @JsonProperty(value = "password")
-    String password;
-
     @Schema(description = "Текущий баланс",
             example = "3")
     @JsonProperty(value = "balance")

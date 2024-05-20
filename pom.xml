@@ -15,7 +15,7 @@
     <description>bank-operations-service</description>
     <properties>
         <java.version>17</java.version>
-        <swager.version>2.3.0</swager.version>
+        <swager.version>2.5.0</swager.version>
         <jwt-token.version>0.12.5</jwt-token.version>
     </properties>
     <dependencies>

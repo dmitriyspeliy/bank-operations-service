@@ -48,20 +48,13 @@ public class SearchingController {
                     content = {@Content(mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = ErrorResponse.class)))})})
     @GetMapping("/date-of-birth")
-    public List<UserDto> filterByDateOfBirth(@Parameter(name = "Дата рождения в формате yyyy-MM-dd", example = "2012-12-29")
-                                             @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}", message = "Date of birth must be format yyyy-MM-dd")
-                                             @RequestParam("date") LocalDate localDate,
-                                             @Parameter(name = "Номер страницы")
-                                             @Min(0)
-                                             @RequestParam("pageNumber")
-                                             int pageNumber,
-                                             @Parameter(name = "Количество элементов на странице")
-                                             @Min(1) @Max(100)
-                                             @RequestParam("limit")
-                                             int limit,
-                                             @Parameter(name = "Параметр сортировки")
-                                             @NotNull
-                                             @RequestParam("sort") PostSort sort
+    public List<UserDto> filterByDateOfBirth(
+            @Parameter(description = "Date of birth must be format yyyy-MM-dd", example = "2012-12-29")
+            @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}", message = "Date of birth must be format yyyy-MM-dd")
+            @RequestParam("date") LocalDate localDate,
+            @Parameter(description = "Number of page") @Min(0) @RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
+            @Parameter(description = "Limit elem on page") @Min(1) @Max(100) @RequestParam("limit") int limit,
+            @Parameter(description = "Sorting param") @NotNull @RequestParam("sort") PostSort sort
     ) {
         return userService.findByDateOfBirthAfter(localDate, pageNumber, limit, sort);
     }
@@ -85,12 +78,8 @@ public class SearchingController {
                     content = {@Content(mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = ErrorResponse.class)))})})
     @GetMapping("/phone")
-    public ResponseEntity<UserDto> findUserByPhone(
-            @Parameter(name = "Телефон")
-            @Size(max = 12)
-            @RequestParam("phone")
-            String phone
-    ) throws ElemNotFound {
+    public ResponseEntity<UserDto> findUserByPhone(@RequestParam("phone") @Parameter(description = "Phone") @Size(max = 12) String phone)
+            throws ElemNotFound {
         return ResponseEntity.ok(userService.findByPhone(phone));
     }
 
@@ -113,12 +102,8 @@ public class SearchingController {
                     content = {@Content(mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = ErrorResponse.class)))})})
     @GetMapping("/email")
-    public ResponseEntity<UserDto> findUserByEmail(
-            @Parameter(name = "Почта")
-            @Size(max = 12)
-            @RequestParam("email")
-            String email
-    ) throws ElemNotFound {
+    public ResponseEntity<UserDto> findUserByEmail(@Parameter(description = "Email") @Size(max = 100) @RequestParam(name = "email") String email)
+            throws ElemNotFound {
         return ResponseEntity.ok(userService.findByEmail(email));
     }
 
@@ -136,24 +121,15 @@ public class SearchingController {
                     content = {@Content(mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = ErrorResponse.class)))})})
     @GetMapping("/fullname")
-    public List<UserDto> findUserByFullname(
-            @Parameter(name = "Полное ФИО")
-            @Size(max = 100)
-            @NotNull(message = "Fullname mustn't null")
-            @NotEmpty(message = "Fullname must be filled in")
-            @RequestParam("fullname")
-            String fullname,
-            @Parameter(name = "Номер страницы")
-            @Min(0)
-            @RequestParam("pageNumber")
-            int pageNumber,
-            @Parameter(name = "Количество элементов на странице")
-            @Min(1) @Max(100)
-            @RequestParam("limit")
-            int limit,
-            @Parameter(name = "Параметр сортировки")
-            @NotNull
-            @RequestParam("sort") PostSort sort
+    public List<UserDto> findUserByFullname(@Parameter(description = "Full name")
+                                            @Size(max = 100)
+                                            @NotNull(message = "Fullname mustn't null")
+                                            @NotEmpty(message = "Fullname must be filled in")
+                                            @RequestParam("fullname") String fullname,
+                                            @Parameter(description = "Number of page") @Min(0) @RequestParam(name = "pageNumber", defaultValue = "0")
+                                            int pageNumber,
+                                            @Parameter(description = "Limit elem on page") @Min(1) @Max(100) @RequestParam("limit") int limit,
+                                            @Parameter(description = "Sorting param") @NotNull @RequestParam("sort") PostSort sort
     ) {
         return userService.findByFullnameLike(fullname, pageNumber, limit, sort);
     }

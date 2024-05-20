@@ -1,0 +1,10 @@
+spring:
+  jpa:
+    open-in-view: false
+    show-sql: true
+  datasource:
+    url: ${HOST_DB:jdbc:postgresql://localhost:5433/bank-test}
+    username: ${DB_USER:admin}
+    password: ${DB_PASS:admin}
+    driver-class-name: org.postgresql.Driver
+

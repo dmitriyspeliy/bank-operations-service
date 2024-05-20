@@ -1,14 +1,17 @@
 package com.effectivemobile.bankoperationsservice.repository;
 
 import com.effectivemobile.bankoperationsservice.model.User;
+import org.springframework.data.domain.Limit;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -23,17 +26,20 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByLoginEmailPhone(String login, String email, String phone);
 
     @Modifying
+    @Transactional
     @Query("update User u set u.phone = :phone where u.id = :id")
     void updateUserPhone(@Param(value = "phone") String phone, @Param(value = "id") Long id);
 
     @Modifying
+    @Transactional
     @Query("update User u set u.email = :email where u.id = :id")
     void updateUserEmail(@Param(value = "email") String email, @Param(value = "id") Long id);
 
+    @Query(nativeQuery = true, value = "select * from \"user\" where date_of_birth > ?1")
     Page<User> findByDateOfBirthAfter(LocalDate dateOfBirth, Pageable pageable);
 
-    @Query("Select User from User c where c.fullname like :fullname||'%'")
-    Page<User> findByFullnameLike(@Param(value = "fullname") String fullname, Pageable pageable);
+    @Query(nativeQuery = true, value = "select * from \"user\" where fullname like ?1||'%'")
+    Page<User> findByFullnameLike(String fullname, Pageable pageable);
 
 
 }

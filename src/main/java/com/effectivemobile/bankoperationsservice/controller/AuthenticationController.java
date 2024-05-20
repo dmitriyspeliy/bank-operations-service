@@ -4,6 +4,7 @@ import com.effectivemobile.bankoperationsservice.dto.AuthResponse;
 import com.effectivemobile.bankoperationsservice.dto.AuthenticationRequest;
 import com.effectivemobile.bankoperationsservice.dto.UserInfo;
 import com.effectivemobile.bankoperationsservice.service.AuthenticationService;
+import com.effectivemobile.bankoperationsservice.service.LogoutService;
 import com.effectivemobile.bankoperationsservice.utils.exception.BadRequestException;
 import com.effectivemobile.bankoperationsservice.utils.exception.ElemNotFound;
 import com.effectivemobile.bankoperationsservice.utils.exception.ErrorResponse;
@@ -19,6 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
@@ -34,6 +37,7 @@ import java.io.IOException;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
+    private final LogoutService logoutService;
 
     @Operation(summary = "Регистрация пользователя",
             description = "При успешной регистрации вернет токен доступа и рефреш токен")
@@ -114,6 +118,28 @@ public class AuthenticationController {
             HttpServletResponse response
     ) throws IOException, ElemNotFound {
         authenticationService.refreshToken(request, response);
+    }
+
+    @Operation(summary = "Выйти из текущей сессии",
+            description = "Обнуляем токены, чистим контекст")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Успешно разлогинились",
+                    content = {@Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = AuthResponse.class)))}),
+            @ApiResponse(
+                    responseCode = "5XX",
+                    description = "Не удалось получить ответ. Причина в сообщении",
+                    content = {@Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ErrorResponse.class)))})})
+    @PostMapping("/logout")
+    public void refreshToken(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Authentication authentication
+    ) {
+        logoutService.logout(request, response, authentication);
     }
 
 

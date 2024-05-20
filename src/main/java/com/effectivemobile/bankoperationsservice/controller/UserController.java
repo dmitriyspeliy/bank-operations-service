@@ -55,8 +55,8 @@ public class UserController {
                             array = @ArraySchema(schema = @Schema(implementation = ErrorResponse.class)))})})
     @PutMapping("/change-phone")
     public void changeUserPhone(
-            @Parameter(name = "Новый телефон") @NotNull @NotBlank @Size(max = 12) @RequestParam("phone") String phone,
-            @Parameter(name = "Идентификатор пользователя") @NotNull @NotBlank @RequestParam("id") Long id
+            @Parameter(description = "New phone") @NotNull @NotBlank @Size(max = 12) @RequestParam("phone") String phone,
+            @Parameter(description = "User ID") @NotNull @NotBlank @RequestParam("id") Long id
     ) throws ElemNotFound {
         userService.changeUserPhone(phone, id);
     }
@@ -81,7 +81,7 @@ public class UserController {
                             array = @ArraySchema(schema = @Schema(implementation = ErrorResponse.class)))})})
     @DeleteMapping("/delete-phone")
     public void deleteUserPhone(
-            @Parameter(name = "Идентификатор пользователя") @NotNull @NotBlank @RequestParam("id") Long id
+            @Parameter(description = "User ID") @NotNull @NotBlank @RequestParam("id") Long id
     ) throws BadRequestException {
         userService.deleteUserPhone(id);
     }
@@ -106,8 +106,8 @@ public class UserController {
                             array = @ArraySchema(schema = @Schema(implementation = ErrorResponse.class)))})})
     @PutMapping("/change-email")
     public void changeUserEmail(
-            @Parameter(name = "Новая почта") @Size(max = 100) @Email @RequestParam("email") String email,
-            @Parameter(name = "Идентификатор пользователя") @NotNull @NotBlank @RequestParam("id") Long id
+            @Parameter(description = "New email") @Size(max = 100) @Email @RequestParam("email") String email,
+            @Parameter(description = "User ID") @NotNull @NotBlank @RequestParam("id") Long id
     ) throws ElemNotFound {
         userService.changeUserEmail(email, id);
     }
@@ -132,7 +132,7 @@ public class UserController {
                             array = @ArraySchema(schema = @Schema(implementation = ErrorResponse.class)))})})
     @DeleteMapping("/delete-email")
     public void deleteUserEmail(
-            @Parameter(name = "Идентификатор пользователя") @NotNull @NotBlank @RequestParam("id") Long id
+            @Parameter(description = "User ID") @NotNull @NotBlank @RequestParam("id") Long id
     ) throws BadRequestException {
         userService.deleteUserEmail(id);
     }
